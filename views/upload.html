@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Upload</title>
+</head>
+<body>
+	<div id="image">
+		<input type="file" name="image" @change="upload">
+	</div>
+	<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+	<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+	<script type="text/javascript">
+		var image = new Vue({
+			el: '#image',
+			data: {},
+			methods: {
+				upload: function(e) {
+					let formData = new FormData();
+					formData.append('image', e.target.files[0])
+					this.uploadFile("upload/image", formData).then(function (res) {
+						console.log(res)
+					})
+					console.log(e.target.files[0])
+				},
+				uploadFile: function(url, data) {
+					let config = {
+				  	//请求的接口，在请求的时候，如axios.get(url,config);这里的url会覆盖掉config中的url
+				  	url: url,
+				  	//基础url前缀
+				  	baseURL: '',
+				  	transformResponse: [function (data1) {
+				   	var data = data1;
+				   	if (typeof data1 == "string") {
+				    	data = JSON.parse(data1);
+				   	}
+				   	//这里提前处理返回的数据;
+				   	if (data.message && (data.data === 'login.invalid.token')) {
+				    	window.localStorage.removeItem("access-user");
+				    	alert("超时请重新登陆");
+				    	window.location.href = '/';
+				   	}
+				   	return data;
+				  	}],
+				  	//请求头信息
+				  	headers: {'access-user': window.localStorage.getItem('access-user'), 'Content-Type': "multipart/form-data"},
+
+				  	//跨域请求时是否需要使用凭证
+				  	withCredentials: true,
+				  	// 返回数据类型
+				  	responseType: 'json', //default
+				};
+				return axios.post(url, data, config);
+			}
+			}
+		})
+	</script>
+</body>
+</html>
