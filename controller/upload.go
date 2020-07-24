@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"imageWarehouse/model/upload"
 )
@@ -16,12 +17,13 @@ func (this *Upload) UploadImage(c *gin.Context) {
 		return
 	}
 
-	err = upload.UploadImage(image)
+	image_name, err := upload.UploadImage(image)
 
 	if err != nil {
-		c.JSON(200, gin.H{"err": err})
+		fmt.Println(err)
+		c.JSON(200, gin.H{"err": err.Error()})
 		return
 	}
 
-	c.JSON(200, gin.H{"msg": "success"})
+	c.JSON(200, gin.H{"msg": image_name})
 }

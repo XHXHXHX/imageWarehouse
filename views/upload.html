@@ -16,11 +16,10 @@
 			methods: {
 				upload: function(e) {
 					let formData = new FormData();
-					formData.append('image', e.target.files[0])
+					formData.append('image', e.target.files[0]);
 					this.uploadFile("upload/image", formData).then(function (res) {
-						console.log(res)
-					})
-					console.log(e.target.files[0])
+						alert(res.data.msg)
+					});
 				},
 				uploadFile: function(url, data) {
 					let config = {

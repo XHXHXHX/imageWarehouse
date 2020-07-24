@@ -1,6 +1,8 @@
 package main
 
 import (
+	"fmt"
+	"imageWarehouse/config"
 	"imageWarehouse/controller"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -9,6 +11,11 @@ import (
 func main() {
 	defer MainPanicHandler()
 
+	err := config.InitConfig("config.json")
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
 	router := gin.New()
 
 	router.LoadHTMLGlob("views/*")
@@ -18,6 +25,7 @@ func main() {
 
 	uploadCtr := &controller.Upload{}
 	router.POST("/upload/image", uploadCtr.UploadImage)
+
 	_ = router.Run(":7111")
 }
 
